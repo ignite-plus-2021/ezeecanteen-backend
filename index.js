@@ -55,7 +55,6 @@ app.post('/login', (req, res) => {
     if (password && email) {
         db.query('SELECT * FROM signup WHERE email = ?', [email], function (err, hashrec, req) {
             if (hashrec.length > 0) {
-                if (email && password) {
                     db.query('SELECT password FROM signup WHERE email = ?', [email, password], function (err, hash, req) {
                         var resultArrayh = Object.values(JSON.parse(JSON.stringify(hash)))
                         bcrypt.compare(password, resultArrayh[0].password, function (err, resh) {
@@ -80,7 +79,6 @@ app.post('/login', (req, res) => {
                         }
                         )
                     })
-                }
             }
             else {
                 res.send({ message: 'Incorrect Email and/or Password!' });
