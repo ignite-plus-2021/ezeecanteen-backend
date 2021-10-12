@@ -3,21 +3,16 @@ const session = require('express-session');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const app = express();
-const path = require('path');
 const bcrypt = require('bcrypt');
 const mysql = require('mysql2');
-const db = mysql.createConnection({
-    host: 'localhost',
-    user: 'root',
-    password: 'root!123',
-    database: 'ezeecanteen'
-});
-const db1 = mysql.createConnection({
-    host: 'localhost',
-    user: 'root',
-    password: 'root!123',
-    database: 'menu'
-});
+var config = require('./config.env');
+
+const db = mysql.createConnection(
+    config.databaseOptions
+);
+const db1 = mysql.createConnection(
+    config.databaseOptions1
+);
 app.use(session({
     secret: 'secret',
     resave: true,
@@ -39,6 +34,7 @@ app.get('/lastid', (req, res) => {
         res.send(result);
     });
 })
+
 app.post('/carddetails', (req, res) => {
     const cardName = req.body.cname;
     const cardNo = req.body.cNo;
@@ -55,6 +51,7 @@ app.post('/login', (req, res) => {
     if (password && email) {
         db.query('SELECT * FROM signup WHERE email = ?', [email], function (err, hashrec, req) {
             if (hashrec.length > 0) {
+                if (email && password) {
                     db.query('SELECT password FROM signup WHERE email = ?', [email, password], function (err, hash, req) {
                         var resultArrayh = Object.values(JSON.parse(JSON.stringify(hash)))
                         bcrypt.compare(password, resultArrayh[0].password, function (err, resh) {
@@ -79,6 +76,7 @@ app.post('/login', (req, res) => {
                         }
                         )
                     })
+                }
             }
             else {
                 res.send({ message: 'Incorrect Email and/or Password!' });
