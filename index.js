@@ -1,4 +1,4 @@
-econst express = require('express');
+const express = require('express');
 const session = require('express-session');
 const bodyParser = require('body-parser');
 const cors = require('cors');
@@ -102,7 +102,7 @@ app.post("/api/insert", (req1, res1) => {
     bcrypt.hash(password, 10, function (err, hash) {
         console.log(fullname, email, hash);
         if (fullname == "" || email == "" || password == "" || usertype == "") {
-            res1.send({ message: "Enter Fullname, Valid Email id and Password and select Usertype to Sign up !!!" })
+            res1.send({ message: "Enter Fullname, Valid Email id and Valid Password and select Usertype to Sign up !!!" })
         }
         db.query("SELECT email from ezeecanteen.signup where email=?", [email], (err, res11) => {
             if (err) throw err;
